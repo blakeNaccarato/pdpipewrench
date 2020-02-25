@@ -16,8 +16,13 @@ setup(
     ],
     extras_require={  # pip install -e .[dev]
         "dev": [
+            # data science
+            "numpy",
+            "scipy",
             # document
             "doc8",
+            # envs
+            "python-dotenv",
             # experiment
             "jupyter",
             # format
