@@ -12,7 +12,7 @@ setup(
         "pandas",
         "pdpipe",
         "confuse",
-        "pyyaml",
+        "python-dotenv",
     ],
     extras_require={  # pip install -e .[dev]
         "dev": [
@@ -21,8 +21,6 @@ setup(
             "scipy",
             # document
             "doc8",
-            # envs
-            "python-dotenv",
             # experiment
             "jupyter",
             # format
