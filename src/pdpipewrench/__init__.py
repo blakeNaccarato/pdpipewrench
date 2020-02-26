@@ -15,3 +15,13 @@ config_filepath = os.path.join(env_val, CONFIG_FILENAME)
 dump_filepath = "test.yaml"
 
 config = LazyConfig("Pdpipewrench")
+
+
+def load():
+    pass
+    # path = "path"
+    # regex = "results*"
+    # files = glob(join(path, regex))
+    # for file in files:
+    #     df = pd.read_csv(file)
+    #     print(df["time"].head())
