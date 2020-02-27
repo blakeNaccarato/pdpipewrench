@@ -2,6 +2,14 @@
 # pylint: disable-all
 # type: ignore
 
+#? Not yet implemented.
+functions: List[Callable] = []
+for stage in config["stages"]:
+    function = getattr(__name__, stage["function"].get())
+    args = stage["args"].get()
+    function = partial(function, **args)
+    functions.append(function)
+
 #? Originally in pdpipewrench/__init__.py as a check on source and sink filenames.
 #? Removed after implementing source/sink classes.
 # get paths from config.yaml, either relative to config.yaml dir or absolute
