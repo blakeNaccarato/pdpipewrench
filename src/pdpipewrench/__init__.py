@@ -36,7 +36,7 @@ def in_config_path(file) -> bool:
 
 def get_kwargs(config: confuse.ConfigView) -> Dict:
     try:
-        kwargs = config.get()
+        kwargs = config["kwargs"].get()
     except confuse.NotFoundError:
         kwargs = {}
     return kwargs
@@ -101,7 +101,7 @@ class DrainPipeMismatch(Exception):
         super().__init__(msg)
 
 
-# classes
+# source and sink
 class Source:
     """
     Sources data.
@@ -116,7 +116,7 @@ class Source:
         test_file = self.files[0]
         if not in_config_path(test_file):
             raise FileNotInConfigDir(test_file, self.config)
-        self.kwargs = get_kwargs(self.config["kwargs"])
+        self.kwargs = get_kwargs(self.config)
 
     def draw(self) -> List[pd.DataFrame]:
         """
@@ -142,7 +142,7 @@ class Sink:
         test_file = self.file
         if not in_config_path(test_file):
             raise FileNotInConfigDir(test_file, self.config)
-        self.kwargs = get_kwargs(self.config["kwargs"])
+        self.kwargs = get_kwargs(self.config)
         self.files: List[str] = []
         self.dfs: List[pd.DataFrame] = []
 
@@ -199,12 +199,43 @@ class Sink:
                 df.to_csv(f, **self.kwargs)
 
 
+# wrench
+
+
+def getfun(module: ModuleType, fun_name: str):
+    fun_path = [module]
+    fun_path.extend(fun_name.split("."))  # type: ignore
+    fun = reduce(getattr, fun_path)  # type: ignore
+    return fun
+
+
 class Wrench:
     """
     Creates pipelines.
     """
 
-    config: ClassVar[List[str]] = config
+    def __init__(self, module: ModuleType):
+        self.config = config["stages"]
+        self.stages = [s for s in self.config]
+        self.pipes: List[pdp.PdPipeline] = []
+        for stage in self.stages:
+            fun: Union[Callable, None] = None
 
-    def __init__(self, functions_module: ModuleType):
-        self.functions_module = functions_module
+            if "function" in stage.keys():
+                config_fun = stage["function"]
+                fun_name = config_fun["name"].get()
+                fun = getfun(module, fun_name)
+                kwargs = get_kwargs(config_fun)
+                fun = partial(fun, **kwargs)  # type: ignore
+
+            if "pdp" in stage.keys():
+                config_pipe = stage["pdp"]
+                pipe_name = config_pipe["name"].get()
+                pipe = getfun(pdp, pipe_name)
+                kwargs = get_kwargs(config_pipe)
+                if fun is not None:
+                    self.pipes.append(pipe(fun, **kwargs))
+                else:
+                    self.pipes.append(pipe(**kwargs))
+
+        self.pipeline = pdp.PdPipeline(self.pipes)
