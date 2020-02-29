@@ -1,31 +1,55 @@
-# ignore warnings for missing scikit-learn and nltk extras
 import warnings
-from functools import partial, reduce
 from types import ModuleType
-from typing import Callable, List, Union
+from typing import ClassVar, List, Union
 
 from . import CONFIG
 from . import config as cfg
+from .sources import Source, Sink
 
+# ignore warnings for missing scikit-learn and nltk extras
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import pdpipe as pdp
 
 
-def getfun(module: ModuleType, fun_name: str):
-    fun_path = [module]
-    fun_path.extend(fun_name.split("."))  # type: ignore
-    fun = reduce(getattr, fun_path)  # type: ignore
-    return fun
-
-
-class Pipeline:
+class Wrench:
     """
-    A pipeline.
+    A wrench.
     """
 
-    def __init__(self, pipeline_name: Union[int, str]):
-        pass
+    def __init__(self, module: ModuleType, name: Union[int, str]):
+        """
+        A pipeline.
+        """
+        self.module = module
+        self.config = CONFIG["pipelines"][name]
+        self.pipes: List[Pipe] = []
+        for i, _ in enumerate(self.config):
+            self.pipes.append(Pipe(self, i))
+
+    def build(self, source: Source, sink: Sink) -> pdp.PdPipeline:
+        # TODO
+        print("Method not yet implemented.")
+        pipeline = self.build_pipeline()
+        self.connect_source(source)
+        self.connect_sink(sink)
+        return pipeline
+
+    def build_pipeline(self) -> pdp.PdPipeline:
+        self.pipeline = pdp.PdPipeline([pipe.stage for pipe in self.pipes])
+        return self.pipeline
+
+    def connect_source(self, source: Source):
+        # TODO
+        print("Method not yet implemented.")
+
+    def connect_sink(self, sink: Sink):
+        # TODO
+        print("Method not yet implemented.")
+
+    def test_run(self):
+        # TODO
+        print("Method not yet implemented.")
 
 
 class Pipe:
@@ -33,37 +57,20 @@ class Pipe:
     A pipe.
     """
 
-    def __init__(self, pipeline_name: str, pipe_number: int):
-        self.config = CONFIG[pipe_number]
+    stage_getters: ClassVar = {
+        "transform": cfg.get_stage_transform,
+        "verify": cfg.get_stage_verify,
+        "pdpipe": cfg.get_stage_pdpipe,
+        "engarde": cfg.get_stage_engarde,
+    }
+    choices = [k for k in stage_getters.keys()]
 
-
-class Forge:
-    """
-    Creates pipelines.
-    """
-
-    def __init__(self, module: ModuleType):
-        self.config = CONFIG["stages"]
-        self.stages = [s for s in self.config]
-        self.pipes: List[pdp.PdPipeline] = []
-        for stage in self.stages:
-            fun: Union[Callable, None] = None
-
-            if "function" in stage.keys():
-                config_fun = stage["function"]
-                fun_name = config_fun["name"].get()
-                fun = getfun(module, fun_name)
-                kwargs = cfg.get_kwargs(config_fun)
-                fun = partial(fun, **kwargs)  # type: ignore
-
-            if "pdp" in stage.keys():
-                config_pipe = stage["pdp"]
-                pipe_name = config_pipe["name"].get()
-                pipe = getfun(pdp, pipe_name)
-                kwargs = cfg.get_kwargs(config_pipe)
-                if fun is not None:
-                    self.pipes.append(pipe(fun, **kwargs))
-                else:
-                    self.pipes.append(pipe(**kwargs))
-
-        self.pipeline = pdp.PdPipeline(self.pipes)
+    def __init__(self, wrench: Wrench, pipe_number: int):
+        """
+        A pipe.
+        """
+        self.parent = wrench
+        self.config = wrench.config[pipe_number]
+        choice = self.config["type"].as_choice(self.choices)
+        get_stage = self.stage_getters[choice]
+        self.stage = get_stage(self)

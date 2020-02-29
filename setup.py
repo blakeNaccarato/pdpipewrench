@@ -11,6 +11,7 @@ setup(
     install_requires=[
         "pandas",
         "pdpipe",
+        "engarde",
         "confuse",
         "python-dotenv",
     ],

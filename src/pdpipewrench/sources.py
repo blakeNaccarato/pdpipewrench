@@ -4,9 +4,10 @@ from typing import List, Union
 
 from pandas import DataFrame, concat, read_csv
 
+from pdpipewrench import CONFIG
+
 from . import config as cfg
 from . import exceptions as exc
-from pdpipewrench import CONFIG
 
 
 class Source:
@@ -23,7 +24,7 @@ class Source:
         test_file = self.files[0]
         if not cfg.in_config_path(test_file):
             raise exc.FileNotInConfigDir(test_file, self.config)
-        self.kwargs = cfg.get_kwargs(self.config)
+        self.kwargs = cfg.get_or_empty(self.config["kwargs"])
 
     def draw(self) -> List[DataFrame]:
         """
@@ -49,7 +50,7 @@ class Sink:
         test_file = self.file
         if not cfg.in_config_path(test_file):
             raise exc.FileNotInConfigDir(test_file, self.config)
-        self.kwargs = cfg.get_kwargs(self.config)
+        self.kwargs = cfg.get_or_empty(self.config["kwargs"])
         self.files: List[str] = []
         self.dfs: List[DataFrame] = []
 
