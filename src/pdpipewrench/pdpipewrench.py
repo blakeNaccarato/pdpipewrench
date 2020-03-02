@@ -209,7 +209,7 @@ class Sink:
             (sink_folder, sink_filename) = path.split(self.file)
             file_suffix = sink_filename.strip("*")
             for file in source.files:
-                (_, filename) = path.split(file)
+                filename = path.basename(file)
                 (file_prefix, _) = path.splitext(filename)
                 sink_file = path.join(sink_folder, file_prefix + file_suffix)
                 self.files.append(sink_file)
@@ -234,19 +234,19 @@ class Sink:
             raise exc.SinkNotBuilt
         self.drain_check()
 
-        (folderpath, _) = path.split(self.files[0])
+        folderpath = path.dirname(self.files[0])
         if not path.isdir(folderpath):
             makedirs(folderpath)
 
-        if self.star_sink:
-            for df, file in zip(self.dfs, self.files):
-                with open(file, "w", newline="") as f:
-                    df.to_csv(f, **self.kwargs)
-        else:  # there is one drain
-            file = self.files[0]
-            df = concat(self.dfs)
+        # if self.star_sink:
+        for df, file in zip(self.dfs, self.files):
             with open(file, "w", newline="") as f:
                 df.to_csv(f, **self.kwargs)
+        # else:  # there is one drain
+        #     file = self.files[0]
+        #     df = concat(self.dfs, names=)
+        #     with open(file, "w", newline="") as f:
+        #         df.to_csv(f, **self.kwargs)
 
         return self.dfs
 
@@ -308,9 +308,13 @@ class Line:
             up_to = len(self.pipeline)
 
         self.source.draw()
-        self.sink.dfs = [self.pipeline[0:up_to](df) for df in self.source.dfs]
+        dfs = [self.pipeline[0:up_to](df) for df in self.source.dfs]
         if len(self.source.files) > 1 and len(self.sink.files) == 1:
-            pass
+            source_filenames = [path.basename(file) for file in self.source.files]
+            self.sink.dfs = [concat(dfs, keys=source_filenames)]
+        else:
+            self.sink.dfs = dfs
+
         self.sink.drain()
         return self.source.dfs, self.sink.dfs
 
