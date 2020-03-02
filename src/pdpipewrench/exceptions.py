@@ -1,3 +1,7 @@
+"""
+Module docstring.
+"""
+
 from . import CONFIG_FILENAME, CONFIG_FOLDERPATH
 
 
@@ -17,17 +21,7 @@ class FileNotInConfigDir(Exception):
         super().__init__(msg)
 
 
-class UnhandledIfCondition(Exception):
-    """
-    Else clause reached due to unhandled if/elif conditional structure.
-    """
-
-    def __init__(self):
-        msg = "Else clause reached due to unhandled if/elif conditional structure."
-        super().__init__(msg)
-
-
-# sink
+# * SINK EXCEPTIONS * #
 class StarSinkMissingSource(Exception):
     """
     A "star sink" has a filename pattern that depends on a sources files. If no source
@@ -42,6 +36,16 @@ class StarSinkMissingSource(Exception):
             f"at '{config_name}'\n"
             f"expects <source> in call to 'Sink({config.key}, <source>)'."
         )
+        super().__init__(msg)
+
+
+class SinkNotBuilt(Exception):
+    """
+    Sink is not yet built.
+    """
+
+    def __init__(self):
+        msg = f"Sink is not yet built."
         super().__init__(msg)
 
 

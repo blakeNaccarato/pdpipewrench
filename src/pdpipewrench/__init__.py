@@ -1,3 +1,7 @@
+"""
+Package docstring.
+"""
+
 import os
 
 from confuse import LazyConfig
@@ -12,5 +16,4 @@ if not os.getenv(ENV_KEY):
 CONFIG_FOLDERPATH = os.environ[ENV_KEY]
 CONFIG = LazyConfig("Pdpipewrench", __name__)
 
-from .sources import Source, Sink  # noqa: E402, F401
-from .forge import Wrench, Pipe  # noqa: E402, F401
+from .pdpipewrench import Source, Sink, Line  # noqa: E402, F401

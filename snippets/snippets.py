@@ -2,13 +2,25 @@
 # pylint: disable-all
 # type: ignore
 
-#? Not yet implemented.
+#? Basic partial reduction of arbitrary function parameters.
 functions: List[Callable] = []
 for stage in config["stages"]:
     function = getattr(__name__, stage["function"].get())
     args = stage["args"].get()
     function = partial(function, **args)
     functions.append(function)
+
+#? Confuse config getting. Replaced by config.get(Template(default={}))
+def get_or_empty(config: cf.ConfigView) -> Dict:
+    """
+    Gets a dict from the config tree if it exists
+    """
+    try:
+        kwargs = config.get()
+    except cf.NotFoundError:
+        kwargs = {}
+    return kwargs
+
 
 #? Originally in pdpipewrench/__init__.py as a check on source and sink filenames.
 #? Removed after implementing source/sink classes.
