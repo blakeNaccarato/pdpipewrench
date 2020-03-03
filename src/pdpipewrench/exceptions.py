@@ -1,5 +1,8 @@
 """
-Module docstring.
+Exceptions found here generally cover data flow issues due to misconfigured
+sources/sinks. Additionally, some of these exceptions shadow more cryptic exceptions
+raised by package dependencies, and point to issues in the user config.yaml keys and
+values.
 """
 
 from . import CONFIG_FILENAME, CONFIG_FOLDERPATH
@@ -7,7 +10,8 @@ from . import CONFIG_FILENAME, CONFIG_FOLDERPATH
 
 class FileNotInConfigDir(Exception):
     """
-    Test.
+    The path to the configuration file is not contained in the path to the desired
+    input/output file(s).
     """
 
     def __init__(self, file, config):
@@ -21,11 +25,14 @@ class FileNotInConfigDir(Exception):
         super().__init__(msg)
 
 
-# * SINK EXCEPTIONS * #
-class StarSinkMissingSource(Exception):
+# * ------------------------------------------------------------------------------ * #
+# * Sink Exceptions
+
+class PatternedSinkMissingSource(Exception):
     """
-    A "star sink" has a filename pattern that depends on a sources files. If no source
-    is specified when creating a star sink, this error is raised.
+    A sink is patterned if there is an asterisk in its "file" configuration key. Such a
+    sink must be passed a source when it is built, to inform the pattern that will
+    replace the asterisk. If a source is not passed, then this exception is raised.
     """
 
     def __init__(self, file, config):
@@ -34,14 +41,14 @@ class StarSinkMissingSource(Exception):
         msg = (
             f"Sink with '{config_value}' pattern specified in '{CONFIG_FILENAME}' "
             f"at '{config_name}'\n"
-            f"expects <source> in call to 'Sink({config.key}, <source>)'."
+            f"expects <source> in call to 'Sink.build(<source>)'."
         )
         super().__init__(msg)
 
 
 class SinkNotBuilt(Exception):
     """
-    Sink is not yet built.
+    An attempt has been made to drain a sink before building it.
     """
 
     def __init__(self):
@@ -51,7 +58,7 @@ class SinkNotBuilt(Exception):
 
 class DrainPipeMismatch(Exception):
     """
-    Number of sink drains don't match number of pipes passed.
+    The number of sink drains doesn't match the number of pipes passed.
     """
 
     def __init__(self, num_drains, num_pipes):
