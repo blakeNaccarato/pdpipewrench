@@ -98,7 +98,7 @@ The module `custom_functions.py` contains:
         def high_enough(df, col_name, val):
             return df.loc[:, col_name] > val
 
-Finally, the contents of tye file `example.py`:
+Finally, the contents of the file `example.py`:
 
     import custom_functions
     import pdpipewrench as pdpw
