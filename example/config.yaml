@@ -37,6 +37,6 @@ pipelines:
     check: high_enough
     kwargs:
       col_name: prices
-      val: 21
+      val: 20
     staging:
       desc: Checks whether all prices are over $19.
