@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pdpipewrench",
-    version="0.3",
+    version="0.4",
     url="https://github.com/blakeNaccarato/pdpipewrench",
     author="Blake Naccarato",
     package_dir={"": "src"},
