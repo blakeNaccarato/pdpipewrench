@@ -1,5 +1,5 @@
 """
-Module docstring.
+YAML-configurable Pandas pipelines using `pandas`, `pdpipe`, `pyyaml`, `confuse`, and `engarde`.
 """
 
 import warnings
@@ -350,8 +350,6 @@ class Sink:
             ...
             example_sink:
               file: output/*_processed.csv
-              kwargs:
-                index: false
             ...
           ...
 
@@ -364,8 +362,8 @@ class Sink:
 
     generates `src` and `snk`. Then, `snk` is built, with the '*' in the pattern being
     replaced by the filenames in `src`. Finally, the files drawn from `src`, drained to
-    `snk`, and written to files. The index column is dropped, per the `kwargs` passed to
-    the internal call to `pandas.DataFrame.to_csv`.
+    `snk`, and written to files. Any `kwargs` specified will be passed to the internal
+    call to `pandas.DataFrame.to_csv`.
     """
 
     def __init__(self, name: Union[int, str]):

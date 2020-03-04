@@ -1,5 +1,5 @@
 """
-Package docstring.
+YAML-configurable Pandas pipelines using `pandas`, `pdpipe`, `pyyaml`, `confuse`, and `engarde`.
 """
 
 import os
