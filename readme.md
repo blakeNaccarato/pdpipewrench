@@ -22,9 +22,9 @@ input and return a `pandas.DataFrame` as output. Pipeline stages are generated f
 these custom functions by specifying them and their keyword arguments in `config.yaml`.
 
 The file `config.yaml` controls all aspects of the pipeline, from data discovery, to
-pipeline stages, to data output. If the environment variable `PDPIPEDATADIR` is not
+pipeline stages, to data output. If the environment variable `PDPIPEWRENCHDIR` is not
 specified, then then it will be set to the current working directory. The file
-`config.yaml` should be put in the `PDPIPEDATADIR`, and data to be processed should be
+`config.yaml` should be put in the `PDPIPEWRENCHDIR`, and data to be processed should be
 in that directory or its subdirectories.
 
 Example
@@ -44,7 +44,7 @@ The directory structure of this example is as follows:
             products_storeB_processed.csv
 
 The contents of `config.yaml` is as follows (paths are relative to the location of
-`config.yaml`, i.e. the `PDPIPEDATADIR`):
+`config.yaml`, i.e. the `PDPIPEWRENCHDIR`):
 
     sources:
       example_source:
@@ -140,18 +140,18 @@ This is  `.\raw\products_storeA.csv` before it is drawn into the source:
 
 | items   |   prices |   inventory | color |
 |:--------|---------:|------------:|------:|
-| foo     |     20.5 |           5 |   red |
-| bar     |     25.5 |           3 | green |
-| baz     |     23.5 |           7 |  blue |
+| foo     |       19 |           5 |   red |
+| bar     |       24 |           3 | green |
+| baz     |       22 |           7 |  blue |
 
 This is  `.\raw\products_storeA.csv` after it is drawn into the source with the argument
 `usecols = ["items", "prices", "inventory"]` specified in `config.yaml`:
 
 | items   |   prices |   inventory |
 |:--------|---------:|------------:|
-| foo     |     20.5 |           5 |
-| bar     |     25.5 |           3 |
-| baz     |     23.5 |           7 |
+| foo     |       19 |           5 |
+| bar     |       24 |           3 |
+| baz     |       22 |           7 |
 
 The output from the pipeline is sent to `.\products_storeA_processed.csv`. The arguments
 specified by `config.yaml` have been applied. Namely, `prices` have been incremented by
