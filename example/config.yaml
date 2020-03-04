@@ -1,0 +1,42 @@
+sources:
+  example_source:
+    file: raw/products*.csv
+    kwargs:
+      usecols:
+        - items
+        - prices
+        - inventory
+      index_col: items
+
+sinks:
+  example_sink:
+    file: output/*_processed.csv
+    kwargs:
+      index: false
+
+pipelines:
+  example_pipeline:
+
+  - type: transform
+    function: add_to_col
+    kwargs:
+      col_name: prices
+      val: 1.5
+    staging:
+      desc: Adds $1.5 to column 'prices'
+      exmsg: Couldn't add to 'prices'.
+
+  - type: pdpipe
+    function: ColDrop
+    kwargs:
+      columns: inventory
+    staging:
+      exraise: false
+
+  - type: verify_all
+    check: high_enough
+    kwargs:
+      col_name: prices
+      val: 21
+    staging:
+      desc: Checks whether all prices are over $19.
