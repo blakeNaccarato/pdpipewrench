@@ -1,8 +1,7 @@
 PdPipeWrench
 ============
 
-YAML-configurable Pandas pipelines using `pandas`, `pdpipe`, `pyyaml`, `confuse`, and
-`engarde`.
+YAML-configurable Pandas pipelines.
 
 The `pdpipewrench` package reads input data, generates pipeline stages, and writes
 output data entirely from the information supplied in a YAML configuration file. In
@@ -10,6 +9,18 @@ addition, custom-made or module-specific functions may be wrapped into pipeline 
 as specified in the YAML. Keyword arguments to such functions are also specified in
 YAML, which sidesteps the problem of hard coding parameters into numerous `*.py` files
 for different datasets, each slightly different than the last.
+
+Installation
+------------
+
+    pip install pdpipewrench
+
+Requirements
+------------
+
+This package manages YAML configurations with `confuse`, which itself depends on
+`pyYAML`. Pipeline stages and pipelines are generated with `pdpipe`, and `engarde` is an
+optional dependency for `verify_all`-, `verify_any`-, and `engarde`-type stages.
 
 Details
 -------

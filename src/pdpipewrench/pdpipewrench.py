@@ -1,5 +1,5 @@
 """
-YAML-configurable Pandas pipelines using `pandas`, `pdpipe`, `pyyaml`, `confuse`, and `engarde`.
+YAML-configurable Pandas pipelines.
 """
 
 import warnings
