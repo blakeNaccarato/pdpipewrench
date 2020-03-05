@@ -1,8 +1,17 @@
 from setuptools import setup, find_packages
+from os import path
+
+# read the contents of your README file
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name="pdpipewrench",
-    version="1.0",
+    version="1.1",
+    description="YAML-configurable Pandas pipelines.",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://github.com/blakeNaccarato/pdpipewrench",
     author="Blake Naccarato",
     package_dir={"": "src"},
