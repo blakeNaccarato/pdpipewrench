@@ -13,7 +13,6 @@ setup(
         "pdpipe",
         "engarde",
         "confuse",
-        "python-dotenv",
     ],
     extras_require={  # pip install -e .[dev]
         "dev": [
