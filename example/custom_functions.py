@@ -1,4 +1,5 @@
 def add_to_col(df, col_name, val):
+    df = df.copy()
     df.loc[:, col_name] = df.loc[:, col_name] + val
     return df
 
