@@ -26,6 +26,7 @@ setup(
     extras_require={  # pip install -e .[dev]
         "dev": [
             # build
+            "setuptools",
             "wheel",
             "twine",
             # data science
