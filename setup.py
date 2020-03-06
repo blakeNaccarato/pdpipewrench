@@ -25,6 +25,9 @@ setup(
     ],
     extras_require={  # pip install -e .[dev]
         "dev": [
+            # build
+            "wheel",
+            "twine",
             # data science
             "numpy",
             "scipy",
