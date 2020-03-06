@@ -28,7 +28,7 @@ with warnings.catch_warnings():
 
 def in_config_path(file: str) -> bool:
     """
-    Checks whether the path to the configuration file is contained in the path to the
+    Check whether the path to the configuration file is contained in the path to the
     desired input/output file(s).
     """
 
@@ -37,7 +37,7 @@ def in_config_path(file: str) -> bool:
 
 def getfun(fun_name: str, module: ModuleType):
     """
-    Finds a function through successive application of `getattr`. If the parent module
+    Get a function through successive application of `getattr`. If the parent module
     imports other modules, this will be able to follow a dotted path to functions in the
     imported module.
 
@@ -45,8 +45,7 @@ def getfun(fun_name: str, module: ModuleType):
     -------
     fun : Callable
 
-        This is only meant to be called on function names, and therefore should find
-        callable functions or methods.
+    `function: Callable`: Callable function or method.
     """
 
     fun_path = [module]
@@ -62,7 +61,7 @@ def getfun(fun_name: str, module: ModuleType):
 
 def get_stage_transform(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStage:
     """
-    Gets a "transform" stage from `config.yaml`.
+    Get a "transform" stage from `config.yaml`.
 
     Example
     -------
@@ -115,7 +114,7 @@ def get_stage_transform(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStag
 
 def get_stage_pdpipe(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStage:
     """
-    Gets a "pdpipe" stage from `config.yaml`.
+    Get a "pdpipe" stage from `config.yaml`.
 
     Example
     -------
@@ -160,7 +159,7 @@ def get_stage_pdpipe(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStage:
 
 def get_stage_verify(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStage:
     """
-    Gets a "verify" stage from `config.yaml`.
+    Get a "verify" stage from `config.yaml`.
 
     Example
     -------
@@ -219,7 +218,7 @@ def get_stage_verify(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStage:
 
 def get_stage_engarde(line, stage_config: cf.ConfigView) -> pdp.PdPipelineStage:
     """
-    Gets an 'engarde' stage from `config.yaml`.
+    Get an 'engarde' stage from `config.yaml`.
 
     Example
     -------
@@ -441,16 +440,16 @@ class Sink:
 
 class Line:
     """
-    Generates pipelines, built from `config.yaml`, holds `Source` and `Sink` connections
-    as well, allowing for the full data pipeline from source to sink to be run. The
-    `module` parameter points to a module imported in the current workspace. Custom
-    functions mentioned in `config.yaml` should be found in `module`.
+    Pipeline handler. Builds pipelines from `config.yaml`, holds `Source` and `Sink`
+    connections as well, allowing for the full data pipeline from source to sink to be
+    run. The `module` parameter points to a module imported in the current workspace.
+    Custom functions mentioned in `config.yaml` should be found in `module`.
 
     Parameters
     ----------
 
-    `name: int, str`: The key that identifies the pipeline in `config.yaml`.
-    `module: : ModuleType`: Module containing custom dataframe-operating functions.
+    `name: int, str`: The key that identifies the pipeline in `config.yaml`. `module:
+    ModuleType`: Module containing custom dataframe-operating functions.
 
     Example
     -------
