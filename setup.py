@@ -32,6 +32,7 @@ setup(
             # data science
             "numpy",
             "scipy",
+            "dtale",
             # document
             "doc8",
             # experiment
