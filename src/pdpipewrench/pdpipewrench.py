@@ -572,6 +572,8 @@ class Line:
         self.module = module
         self.config = CONFIG["pipelines"][name]
         self.stages: List[pdp.PdPipelineStage] = []
+        self.current_stage = 0
+        self.done = False
         for i, _ in enumerate(self.config):
             stage_config = self.config[i]
             choice = stage_config["type"].as_choice(self.choices)
@@ -588,7 +590,7 @@ class Line:
         self.built = True
         return self.pipeline
 
-    def connect(self, source: Source, sink: Sink) -> pdp.PdPipeline:
+    def connect(self, source: Source, sink: Sink) -> List[DataFrame]:
         """
         Builds the pipeline if necessary, then connects a source and sink to the
         pipeline.
@@ -605,17 +607,36 @@ class Line:
             self.build()
         sink.build(source)
         self.source = source
+        self.source.draw()
+        self.current_dfs = self.source.dfs
         self.sink = sink
-        return self.pipeline
+        return self.current_dfs
 
-    def run(self) -> Tuple[List[DataFrame], List[DataFrame]]:
+    def step(self) -> List[DataFrame]:
+        """
+        Takes one step in the pipeline.
+        """
+
+        self.current_dfs = [
+            self.pipeline[self.current_stage].apply(df) for df in self.current_dfs
+        ]
+
+        self.current_stage += 1
+        if self.current_stage == len(self.pipeline):
+            self.done = True
+            self.current_stage = 0
+
+        return self.current_dfs
+
+    def run(self) -> List[DataFrame]:
         """
         Runs the pipeline. Draws from the source, sends dataframes through the pipeline,
         and drains the resulting dataframes to the sink files.
         """
 
-        self.source.draw()
-        dfs = [self.pipeline(df) for df in self.source.dfs]
+        while not self.done:
+            dfs = self.step()
+
         if len(self.source.files) > 1 and len(self.sink.files) == 1:
             source_filenames = [path.basename(file) for file in self.source.files]
             self.sink.dfs = [concat(dfs, keys=source_filenames)]
@@ -623,7 +644,7 @@ class Line:
             self.sink.dfs = dfs
 
         self.sink.drain()
-        return self.source.dfs, self.sink.dfs
+        return self.sink.dfs
 
     def test(
         self, num_stages: int = None, index: int = 0
