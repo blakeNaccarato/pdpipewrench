@@ -611,7 +611,7 @@ class Line:
 
         return self.source.dfs
 
-    def run_one(self, to_stage: int = None, source_idx: int = 0) -> DataFrame:
+    def run_one(self, source_idx: int = 0, to_stage: int = None) -> DataFrame:
         """
         Runs the pipeline on just one source file.
 
