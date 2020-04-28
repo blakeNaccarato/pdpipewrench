@@ -313,7 +313,7 @@ class Source:
         """
 
         self.config = CONFIG["sources"][name]
-        self.files = glob(self.config["file"].as_filename())
+        self.files = sorted(glob(self.config["file"].as_filename()))
         if not in_config_path(self.files[0]):
             raise exc.FileNotInConfigDir(self.files[0], self.config)
         self.kwargs = self.config["kwargs"].get(cf.Template(default={}))
@@ -636,7 +636,7 @@ class Line:
 
         return df
 
-    def run(self) -> List[DataFrame]:
+    def run(self, concat_axis: str = "index") -> List[DataFrame]:
         """
         Runs the pipeline. Draws from the source, sends dataframes through the pipeline,
         and drains the resulting dataframes to the sink files.
@@ -646,7 +646,7 @@ class Line:
 
         if len(self.source.files) > 1 and len(self.sink.files) == 1:
             source_filenames = [path.basename(file) for file in self.source.files]
-            self.sink.dfs = [concat(dfs, keys=source_filenames)]
+            self.sink.dfs = [concat(dfs, keys=source_filenames, axis=concat_axis)]
         else:
             self.sink.dfs = dfs
 
