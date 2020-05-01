@@ -313,7 +313,7 @@ class Source:
         """
 
         self.config = CONFIG["sources"][name]
-        self.files = glob(self.config["file"].as_filename())
+        self.files = sorted(glob(self.config["file"].as_filename()))
         if not in_config_path(self.files[0]):
             raise exc.FileNotInConfigDir(self.files[0], self.config)
         self.kwargs = self.config["kwargs"].get(cf.Template(default={}))
@@ -572,8 +572,6 @@ class Line:
         self.module = module
         self.config = CONFIG["pipelines"][name]
         self.stages: List[pdp.PdPipelineStage] = []
-        self.current_stage = 0
-        self.done = False
         for i, _ in enumerate(self.config):
             stage_config = self.config[i]
             choice = stage_config["type"].as_choice(self.choices)
@@ -588,6 +586,7 @@ class Line:
 
         self.pipeline = pdp.PdPipeline([stage for stage in self.stages])
         self.built = True
+
         return self.pipeline
 
     def connect(self, source: Source, sink: Sink) -> List[DataFrame]:
@@ -608,65 +607,48 @@ class Line:
         sink.build(source)
         self.source = source
         self.source.draw()
-        self.current_dfs = self.source.dfs
         self.sink = sink
-        return self.current_dfs
 
-    def step(self) -> List[DataFrame]:
+        return self.source.dfs
+
+    def run_one(self, source_idx: int = 0, to_stage: int = None) -> DataFrame:
         """
-        Takes one step in the pipeline.
+        Runs the pipeline on just one source file.
+
+        Parameters
+        ----------
+
+        `to_stage: int, default None`: Run the entire pipeline by default. Otherwise,
+        just run up until the specified stage.
+
+        `source_idx: int, default 0`: Run the pipeline for the first file from the
+        source (`index = 0`) by default. Otherwise, run the pipeline on the source file
+        specified.
         """
 
-        self.current_dfs = [
-            self.pipeline[self.current_stage].apply(df) for df in self.current_dfs
-        ]
+        if to_stage is not None:
+            to_stage = max(1, min(to_stage, len(self.stages)))
+        else:
+            to_stage = len(self.stages)
 
-        self.current_stage += 1
-        if self.current_stage == len(self.pipeline):
-            self.done = True
-            self.current_stage = 0
+        assert source_idx < len(self.source.dfs)
+        df = self.pipeline[0:to_stage].apply(self.source.dfs[source_idx])
 
-        return self.current_dfs
+        return df
 
-    def run(self) -> List[DataFrame]:
+    def run(self, concat_axis: str = "index") -> List[DataFrame]:
         """
         Runs the pipeline. Draws from the source, sends dataframes through the pipeline,
         and drains the resulting dataframes to the sink files.
         """
 
-        while not self.done:
-            dfs = self.step()
+        dfs = [self.run_one(source_idx=i) for i in range(0, len(self.source.dfs))]
 
         if len(self.source.files) > 1 and len(self.sink.files) == 1:
             source_filenames = [path.basename(file) for file in self.source.files]
-            self.sink.dfs = [concat(dfs, keys=source_filenames)]
+            self.sink.dfs = [concat(dfs, keys=source_filenames, axis=concat_axis)]
         else:
             self.sink.dfs = dfs
 
         self.sink.drain()
         return self.sink.dfs
-
-    def test(
-        self, num_stages: int = None, index: int = 0
-    ) -> Tuple[DataFrame, DataFrame]:
-        """
-        Tests the pipeline on just one file from the source.
-
-        Parameters
-        ----------
-
-        `num_stages: int, default None`: Test the entire pipeline by default. Otherwise,
-        test the first `num_stages`.
-
-        `index: int, default 0`: Test the pipeline on the first file from the source
-        (`index = 0`) by default. Otherwise, test the pipeline on the file specified.
-        """
-
-        if num_stages is not None:
-            num_stages = max(1, min(num_stages, len(self.pipeline)))
-        else:
-            num_stages = len(self.pipeline)
-
-        [test_source_df] = self.source.draw(index)
-        test_sink_df = self.pipeline[0:num_stages](test_source_df)
-        return test_source_df, test_sink_df
