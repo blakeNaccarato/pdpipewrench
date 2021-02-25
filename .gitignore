@@ -1,5 +1,5 @@
-# Linter config
-.flake8
+# Project-specific
+requirements.txt
 
 # VSCode
 .vscode
