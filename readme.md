@@ -10,6 +10,20 @@ as specified in the YAML. Keyword arguments to such functions are also specified
 YAML, which sidesteps the problem of hard coding parameters into numerous `*.py` files
 for different datasets, each slightly different than the last.
 
+Disclaimer
+----------
+
+Thanks for taking a look at my project! I see that there has been some recent interest in this repo, perhaps coming from the increased development effort on this package's primary dependency, `pdpipe`. I wrote this package to help me standardize some data processing recipes for my graduate work. I am still actively using it to crunch data, but I have barely touched this package since I got it to a minimally functional state. Now that I am doubling down on my graduate work, I have not had time to adequately maintain this project (nor any of my other projects). Use at your own risk, and be sure to only run configs that you control! I have not had time to explore the security implications of passing arguments from YAML files into Python functions, but I suspect that it is a risky endeavor.
+
+Project Philosophy
+------------------
+
+I initially built this because I realized that other "data pipeline" products like Luigi, Airflow, and the like were not really designed for processing the occasional CSV dataset consisting of sensor data and the like, the kind of data that comes out of my graduate thermal engineering research. Luigi and Airflow are great for long-running pipelines that handle customer data in the "data engineering" space, communicating with SQL databases, S3 buckets, data warehouses, and data lakes. I wanted a lower-complexity system for orchestrating pipelines on my experimental data, one that would confine program logic to Python, and pipeline specification to YAML.
+
+I thought that this task would be easy enough, but it has proven difficult to make `pdpipewrench` expressive enough to handle arbitrary pipelines, especially in obtaining intermediate results from the pipeline. `pdpipewrench` works well enough for loading data from a CSV, applying a series of transformations to the data, and then dumping the resulting data back to CSV. I have used it for many-to-many and many-to-one pipelines. I find myself applying multiple pipelines in separate cells of a Jupyter notebook, and hooking up the sink of one pipeline as the source of another. This works fine, but is clunky.
+
+This may turn out to have been a pipe dream after all (heh). Perhaps I am better off by changing my upstream processes, which currently generate CSVs of experimental data, to write to a database format instead. This would allow me to leverage existing, mature pipeline orchestration tools in the data engineering space, even if they aren't strictly designed for my use case.
+
 Installation
 ------------
 
