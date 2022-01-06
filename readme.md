@@ -22,7 +22,7 @@ I initially built this because I realized that other "data pipeline" products li
 
 I thought that this task would be easy enough, but it has proven difficult to make `pdpipewrench` expressive enough to handle arbitrary pipelines, especially in obtaining intermediate results from the pipeline. `pdpipewrench` works well enough for loading data from a CSV, applying a series of transformations to the data, and then dumping the resulting data back to CSV. I have used it for many-to-many and many-to-one pipelines. I find myself applying multiple pipelines in separate cells of a Jupyter notebook, and hooking up the sink of one pipeline as the source of another. This works fine, but is clunky.
 
-This may turn out to have been a pipe dream after all (heh). Perhaps I am better off by changing my upstream processes, which currently generate CSVs of experimental data, to write to a database format instead. This would allow me to leverage existing, mature pipeline orchestration tools in the data engineering space, even if they aren't strictly designed for my use case.
+This may turn out to have been a pipe dream after all (heh). Perhaps I am better off by changing my upstream processes, which currently generate CSVs of experimental data, to write to a database format instead. This would allow me to leverage existing, mature pipeline orchestration tools in the data engineering space, even if they aren't strictly designed for my use case. I welcome any feedback that you may have for me, if you have any ideas feel free to open a thread in the "Discussions" tab of this repo!
 
 Installation
 ------------
