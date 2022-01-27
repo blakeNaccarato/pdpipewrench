@@ -18,8 +18,8 @@ Thanks for taking a look at my project! I see that there has been some recent in
 Related
 -------
 
-- [altescy/pdpcli](https://github.com/altescy/pdpcli): YAML-configurable with attention given to CLI support.
-- [neilbartlett/datapipeliner](https://github.com/neilbartlett/datapipeliner): YAML-configurable with attention to Data Version Control (DVC) needs.
+- [altescy/pdpcli](https://github.com/altescy/pdpcli): YAML-configurable Pandas pipelines with attention given to CLI support.
+- [neilbartlett/datapipeliner](https://github.com/neilbartlett/datapipeliner): YAML-configurable Pandas pipelines with attention given to Data Version Control (DVC) needs.
 
 Project Philosophy
 ------------------
