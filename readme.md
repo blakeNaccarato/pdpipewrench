@@ -15,6 +15,12 @@ Disclaimer
 
 Thanks for taking a look at my project! I see that there has been some recent interest in this repo, perhaps coming from the increased development effort on this package's primary dependency, `pdpipe`. I wrote this package to help me standardize some data processing recipes for my graduate work. I am still actively using it to crunch data, but I have barely touched this package since I got it to a minimally functional state. Now that I am doubling down on my graduate work, I have not had time to adequately maintain this project (nor any of my other projects). Use at your own risk, and be sure to only run configs that you control! I have not had time to explore the security implications of passing arguments from YAML files into Python functions, but I suspect that it is a risky endeavor.
 
+Related
+-------
+
+- [altescy/pdpcli](https://github.com/altescy/pdpcli)
+- [neilbartlett/datapipeliner](https://github.com/neilbartlett/datapipeliner)
+
 Project Philosophy
 ------------------
 
@@ -159,7 +165,7 @@ and what went to `snk`. In addition to `line.run()`, the first `n` stages of the
 pipeline can be tested on file `m` from the source with `line.test(m,n)`.
 
 Output from Example
--------
+-------------------
 
 This is  `.\raw\products_storeA.csv` before it is drawn into the source:
 
