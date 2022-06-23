@@ -1,3 +1,15 @@
+
+Disclaimer
+----------
+
+This project is no longer maintained. If you are here because you have a project idea and wanted to publish it as `pdpipewrench` on PyPI, contact me at blake.naccarato+pdpipewrench@gmail.com and we can talk.
+
+It was initially conceptualized as a way to outfit [pdpipe](https://github.com/pdpipe/pdpipe) pipelines from configuration files, allowing for Pandas pipeline orchestration with minimal code. I have since adopted a less aggressive tact over in [boilerdata](https://github.com/blakeNaccarato/boilerdata), where I still separate configuration out into YAML files (constants, file paths, pipeline function arguments, etc.), but pipeline logic is handled in `pipeline.py`. I have also done away with using `pdpipe` in this approach, as it doesn't lend itself particularly well to [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load). Besides, my data processing need is not quite the "flavor" of statistical data science type approaches supported by `pdpipe`.
+
+This new approach maintains the benefits of writing logic in Python, while allowing configuration in files. I am using [Pydantic](https://github.com/samuelcolvin/pydantic) as the interface between my configs and my logic, which allows me to specify allowable values with `Enums` and other typing constructs. Expressing allowable configurations with Pydantic allows for generation of schema for your config files, raising errors on typos or missing keys, for example. I also specify the "shape" of my input and output data in configs, and validate my dataframes with [pandera](https://github.com/pandera-dev/pandera). Once these components are in place, it is easy to implement new functionality in the pipeline.
+
+The limitations of the approach taken in `PdPipeWrench` are sidestepped by my approach in `boilerdata`, and so I have decided to archive this repository.
+
 PdPipeWrench
 ============
 
@@ -9,11 +21,6 @@ addition, custom-made or module-specific functions may be wrapped into pipeline 
 as specified in the YAML. Keyword arguments to such functions are also specified in
 YAML, which sidesteps the problem of hard coding parameters into numerous `*.py` files
 for different datasets, each slightly different than the last.
-
-Disclaimer
-----------
-
-Thanks for taking a look at my project! I see that there has been some recent interest in this repo, perhaps coming from the increased development effort on this package's primary dependency, `pdpipe`. I wrote this package to help me standardize some data processing recipes for my graduate work. I am still actively using it to crunch data, but I have barely touched this package since I got it to a minimally functional state. Now that I am doubling down on my graduate work, I have not had time to adequately maintain this project (nor any of my other projects). Use at your own risk, and be sure to only run configs that you control! I have not had time to explore the security implications of passing arguments from YAML files into Python functions, but I suspect that it is a risky endeavor.
 
 Related
 -------
